@@ -39,7 +39,33 @@ namespace WebApiServer.Repositories
             }
         }
 
-
+        internal static object TimeSpanParser(long? timeTicks)
+        {
+            if (timeTicks == null)
+            {
+                return new DataResult
+                {
+                    Data = "Add 'timeTicks' to parameters!",
+                    Status = RequestStatus.WrongData
+                };
+            }
+            try
+            {
+                return new DataResult
+                {
+                    Data = new TimeSpan(timeTicks.Value).ToString("hh\\:mm"),
+                    Status = RequestStatus.Success
+                };
+            }
+            catch
+            {
+                return new DataResult
+                {
+                    Data = "Bad 'timeTicks' parameter! (maybe too big?)",
+                    Status = RequestStatus.WrongData
+                };
+            }
+        }
 
         public static DataResult TestApi()
         {

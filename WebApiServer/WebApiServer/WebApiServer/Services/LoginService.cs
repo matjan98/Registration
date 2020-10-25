@@ -69,7 +69,7 @@ namespace WebApiServer.Services
                 return new TokenCheckResult
                 {
                     Logged = false,
-                    AccountType = AccountType.Patient
+                    AccountType = AccountType.Patient,
                 };
             }
             else
@@ -77,7 +77,8 @@ namespace WebApiServer.Services
                 return new TokenCheckResult
                 {
                     Logged = true,
-                    AccountType = userAlreadyLogged.accountType
+                    AccountType = userAlreadyLogged.accountType,
+                    userID = userAlreadyLogged.userID
                 };
             }
         }

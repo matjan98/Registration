@@ -1,4 +1,5 @@
-﻿using Database.Tables;
+﻿using Database;
+using Database.Tables;
 using Microsoft.AspNetCore.Http;
 using Microsoft.Net.Http.Headers;
 using System;
@@ -9,7 +10,7 @@ using WebApiServer.Models;
 
 namespace WebApiServer.Services
 {
-    public static class ValidateRolesService
+    public static class ValidateService
     {
         public static bool ValidatePermission(HttpRequest request, AccountType accountType)
         {
@@ -23,6 +24,17 @@ namespace WebApiServer.Services
             else
             {
                 return false;
+            }
+        }
+
+        public static User GetUser(HttpRequest request)
+        {
+            Microsoft.Extensions.Primitives.StringValues accessToken = request.Headers[HeaderNames.Authorization];
+            var token = accessToken.ToString().Replace("Bearer ", "");
+            var tokenCheckResult = LoginService.CheckToken(token);
+            using (var db = new Context())
+            {
+                return db.User.Where(s => s.ID == tokenCheckResult.userID).FirstOrDefault();
             }
         }
 
