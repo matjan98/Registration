@@ -2,8 +2,13 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using Database;
 using Microsoft.AspNetCore.Mvc;
 using Microsoft.Extensions.Logging;
+using Microsoft.Net.Http.Headers;
+using WebApiServer.Models;
+using WebApiServer.Repositories;
+using WebApiServer.Services;
 
 namespace WebApiServer.Controllers
 {
@@ -22,24 +27,13 @@ namespace WebApiServer.Controllers
         [HttpGet]
         public ActionResult DateParser(long? dateTicks)
         {
-            if(dateTicks == null)
-            {
-                return Ok("Add 'dateTicks' to parameters!");
-            }
-            try
-            {
-                return Ok(new DateTime(dateTicks.Value).ToString("dddd, dd MMMM yyyy"));
-            }
-            catch
-            {
-                return Ok("Bad 'dateTicks' parameter! (maybe too big?)");
-            }
+            return Ok(TargetDeveloperRepository.DateParser(dateTicks));
         }
 
         [HttpGet]
         public ActionResult TestApi()
         {
-            return Ok("Everyhing works fine");
+            return Ok(TargetDeveloperRepository.TestApi());
         }
 
         #endregion
@@ -47,15 +41,15 @@ namespace WebApiServer.Controllers
         #region TagetUser
 
         [HttpGet]
-        public ActionResult LogIn()
+        public ActionResult LogIn(string username, string password)
         {
-            return Ok("This method is not implemented");
+            return Ok(TargetUserRepository.LogIn(username, password));
         }
 
         [HttpGet]
-        public ActionResult Register()
+        public ActionResult Register(string first_name, string last_name, string username, string password, bool doctor)
         {
-            return Ok("This method is not implemented");
+            return Ok(TargetUserRepository.Register(first_name, last_name, username, password, doctor));
         }
 
         #endregion
@@ -65,6 +59,10 @@ namespace WebApiServer.Controllers
         [HttpGet]
         public ActionResult BookAnAppointmentWithDoctor()
         {
+            if(!ValidateRolesService.ValidatePermission(Request, Database.Tables.AccountType.Patient))
+            {
+                return Ok(ValidateRolesService.PatientPermissionRequired);
+            }
             return Ok("This method is not implemented");
         }
 

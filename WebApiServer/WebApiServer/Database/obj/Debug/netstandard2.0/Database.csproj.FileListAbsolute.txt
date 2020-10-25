@@ -1,0 +1,9 @@
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\bin\Debug\netstandard2.0\Database.deps.json
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\bin\Debug\netstandard2.0\Database.dll
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\obj\Debug\netstandard2.0\Database.csprojAssemblyReference.cache
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\obj\Debug\netstandard2.0\Database.AssemblyInfoInputs.cache
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\obj\Debug\netstandard2.0\Database.AssemblyInfo.cs
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\bin\Debug\netstandard2.0\Database.pdb
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\obj\Debug\netstandard2.0\Database.dll
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\obj\Debug\netstandard2.0\Database.pdb
+D:\Moje\Studia\Rejestracja\WebApiServer\WebApiServer\Database\obj\Debug\netstandard2.0\Database.csproj.CoreCompileInputs.cache
