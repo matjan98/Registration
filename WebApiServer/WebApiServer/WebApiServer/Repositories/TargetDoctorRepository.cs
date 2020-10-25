@@ -72,7 +72,7 @@ namespace WebApiServer.Repositories
             using (var db = new Context())
             {
                 var doctor = db.User
-                  .Include(s => s.Specialization)
+                  .Include(s => s.DoctorWorkingTime)
                   .Where(s => s.ID == user.ID).FirstOrDefault();
                 if (doctor.DoctorWorkingTime != null)
                 {
