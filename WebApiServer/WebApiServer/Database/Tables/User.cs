@@ -16,7 +16,8 @@ namespace Database.Tables
         public DateTime last_logged { get; set; }
         public AccountType account_type { get; set; }
 
-        public virtual DoctorSpecialization Specialization{ get; set; }
+        public virtual DoctorSpecialization Specialization { get; set; }
+        public virtual DoctorWorkingTime DoctorWorkingTime { get; set; }
     }
 
     public enum AccountType

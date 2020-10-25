@@ -169,7 +169,7 @@ namespace WebApiServer.Controllers
             {
                 return Ok(ValidateService.AdminPermissionRequired);
             }
-            return Ok(TargetAdministratorRepository.SetPerrmisions(userID, accountType));
+            return Ok(TargetAdministratorRepository.SetPermisions(userID, accountType));
         }
 
         [HttpGet]

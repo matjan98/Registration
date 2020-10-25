@@ -39,7 +39,7 @@ namespace WebApiServer.Repositories
             }
         }
 
-        internal static object TimeSpanParser(long? timeTicks)
+        internal static DataResult TimeSpanParser(long? timeTicks)
         {
             if (timeTicks == null)
             {

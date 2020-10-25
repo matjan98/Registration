@@ -71,10 +71,9 @@ namespace WebApiServer.Repositories
             return new DataResult
             {
                 Data = "User " + username + " added to database succesfuly",
-                Status = RequestStatus.WrongData
+                Status = RequestStatus.Success
             };
         }
-
 
         public static DataResult LogIn(string username, string password)
         {

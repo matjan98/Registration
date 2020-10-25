@@ -15,10 +15,12 @@ namespace Database
         public DbSet<Request> Requests { get; set; }
         public DbSet<User> User { get; set; }
         public DbSet<DoctorSpecialization> DoctorSpecializations { get; set; }
+        public DbSet<DoctorWorkingTime> DoctorWorkingTime { get; set; }
 
         protected override void OnModelCreating(ModelBuilder modelBuilder)
         {
             modelBuilder.Entity<DoctorSpecialization>().HasOne(s => s.User).WithOne(s => s.Specialization);
+            modelBuilder.Entity<DoctorWorkingTime>().HasOne(s => s.User).WithOne(s => s.DoctorWorkingTime);
         }
 
     }

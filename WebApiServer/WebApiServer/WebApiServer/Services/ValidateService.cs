@@ -65,5 +65,48 @@ namespace WebApiServer.Services
             };
         }
 
+        public static DataResult BadTicksValue
+        {
+            get => new DataResult
+            {
+                Data = "Bad ticks value",
+                Status = RequestStatus.WrongData
+            };
+        }
+
+        public static bool ValidateDateTime(long? ticks)
+        {
+            if (ticks == null)
+            {
+                return false;
+            }
+            try
+            {
+                var Data = new DateTime(ticks.Value).ToString("dddd, dd MMMM yyyy");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
+        public static bool ValidateTimeSpan(long? ticks)
+        {
+            if (ticks == null)
+            {
+                return false;
+            }
+            try
+            {
+                var Data = new TimeSpan(ticks.Value).ToString("hh\\:mm");
+                return true;
+            }
+            catch
+            {
+                return false;
+            }
+        }
+
     }
 }
