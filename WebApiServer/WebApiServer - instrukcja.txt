@@ -1,0 +1,16 @@
+Aby odpalić api serwer, trzeba wejść w katalog z buildem (najlepiej najnowszy) -> następnie w katalog linux/windows i:
+
+- Odpalić plik WebApiServer.exe (Windows)
+- w konsoli wpisać "./WebApiServer" albo "dotnet run WebApiServer" (Linux)
+- A na macOSa to się oczywiście nie da zbudować, bo musiałbym mieć macOSa. Jebać Appla!!
+
+Bardzo możliwe, że będzie potrzebny dot net core 3.1 runtime
+Można go pobrać tutaj: https://dotnet.microsoft.com/download/dotnet-core/3.1
+
+Serwer powinien działać zarówno na linuxie, macOSie (jak macie to se możecie na nim zbudować apke) i Windowsie.
+
+Aby serwer działał właściwie, potrzebna jest baza danych postgres lokalnie na komputerze.
+Na postgresie trzeba zrobić baze danych o nazwie "Registration" username musi być "postgres" i hasło - "mateusz98"
+Te rzeczy narazie są zahardkodzone. Możemy to potem przenieść do pliku, żeby każdy na swoim kompie mógł sobie skonfigurować.
+Struktura bazy danych w katalogu "Database Snapshots" się znajduje. 
+Strukture można wprowadzić do świerzo stworzonej bazy danych za pomocą narzędzia "restore" w pgAdmin.
