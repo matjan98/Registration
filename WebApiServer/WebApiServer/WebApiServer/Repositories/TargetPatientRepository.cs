@@ -20,7 +20,7 @@ namespace WebApiServer.Repositories
             }
             using (var db = new Context())
             {
-                if (!HelperMethodsRepository.DoctorIsFree(doctorID, new DateTime(dateTime.Value)))
+                if (!HelperMethodsRepository.DoctorIsFree(doctorID, new DateTime(dateTime.Value), db))
                 {
                     return new DataResult
                     {
@@ -98,9 +98,22 @@ namespace WebApiServer.Repositories
             }
             using (var db = new Context())
             {
-
+                var doctorWorkingTime = db.DoctorWorkingTime.Where(s => s.FK_ID_User == doctorID).FirstOrDefault();
+                return new DataResult
+                {
+                    Data = new DoctorAccessiblity
+                    {
+                        Visits = db.Requests.Where(s => s.FK_ID_doctor == doctorID &&
+                            s.datetime_appointment < new DateTime(dateTimeTo.Value) &&
+                            s.datetime_appointment > new DateTime(dateTimeFrom.Value))
+                            .Select(s => s.datetime_appointment).ToList(),
+                        VisitTimeInMinutes = HelperMethodsRepository.VisitTime,
+                        WorkingTimeFrom = doctorWorkingTime?.time_from ?? new TimeSpan(),
+                        WorkingTimeTo = doctorWorkingTime?.time_to ?? new TimeSpan(),
+                    },
+                    Status = RequestStatus.Success
+                };
             }
-            throw new NotImplementedException();
         }
 
         internal static DataResult ListDoctors()

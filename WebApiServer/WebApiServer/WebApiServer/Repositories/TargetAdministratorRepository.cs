@@ -19,7 +19,7 @@ namespace WebApiServer.Repositories
             }
             using (var db = new Context())
             {
-                if (!HelperMethodsRepository.DoctorIsFree(doctorID, new DateTime(datetime.Value)))
+                if (!HelperMethodsRepository.DoctorIsFree(doctorID, new DateTime(datetime.Value), db))
                 {
                     return new DataResult
                     {
