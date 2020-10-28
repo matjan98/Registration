@@ -131,7 +131,7 @@ namespace WebApiServer.Repositories
                         LastLogged = s.last_logged,
                         LastName = s.last_name,
                         Specialization = s.Specialization.specialization
-                    }),
+                    }).ToList(),
                     Status = RequestStatus.Success
                 };
             }
