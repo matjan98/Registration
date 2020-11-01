@@ -25,6 +25,7 @@ namespace WebApiServer
         public void ConfigureServices(IServiceCollection services)
         {
             services.AddControllers();
+            services.AddSwaggerDocument();
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -33,7 +34,8 @@ namespace WebApiServer
             {
                 app.UseDeveloperExceptionPage();
             }
-
+            app.UseOpenApi();
+            app.UseSwaggerUi3();
             app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
