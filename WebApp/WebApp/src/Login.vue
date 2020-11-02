@@ -1,6 +1,6 @@
 <template>
   <div>
-    <q-checkbox>    </q-checkbox>
+    {{test}}
   </div>
 </template>
 
