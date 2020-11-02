@@ -16,6 +16,7 @@
   },
   "devDependencies": {
     "@types/lodash": "^4.14.164",
+    "@vue/cli-plugin-router": "^4.5.8",
     "css-loader": "^5.0.0",
     "csv-loader": "^3.0.3",
     "file-loader": "^6.2.0",
