@@ -18,10 +18,16 @@
             label="Password"
           ></q-input>
 
-          <router-link to="/register">Reqister</router-link>
+          <q-input
+            dark
+            filled
+            type="password"
+            v-model="password"
+            label="Repeat password"
+          ></q-input>
 
           <div>
-            <q-btn label="Login" color="primary"></q-btn>
+            <q-btn label="Reqister" color="primary"></q-btn>
           </div>
         </q-form>
       </q-card-section>
@@ -33,7 +39,7 @@
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 @Component({ components: {} })
-export default class Login extends Vue {
+export default class Register extends Vue {
   login = "";
   password = "";
 }

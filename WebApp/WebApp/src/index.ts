@@ -22,7 +22,7 @@ Vue.use(Quasar, {
 Vue.use(VueRouter)
 
 import Login from './login';
-import Main from './main';
+import Register from './register';
 
 const router = new VueRouter({
   mode: 'history',
@@ -30,17 +30,13 @@ const router = new VueRouter({
   routes: [
     {
       path: '/',
-      component: Main,
-      meta: {
-        reload: true,
-      },
-    },
-    { 
-      path: '/login', 
+      name: "login",
       component: Login,
-      meta: {
-        reload: true,
-      }, 
+    },
+    {
+      path: '/register',
+      name: "register",
+      component: Register,
     },
   ]
 });
@@ -53,8 +49,6 @@ router.beforeEach((to: any, from: any, next: any) => {
 new Vue({
   router,
   template: ` <div>
-  <div class="nav-item"><router-link to="/" class="nav-link">Home</router-link></div>
-  <div class="nav-item"><router-link to="/login" class="nav-link">Login</router-link></div>
   <router-view :key="$route.fullPath"></router-view>
 </div>`
 }).$mount('#components-demo')
