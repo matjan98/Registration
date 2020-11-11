@@ -12,11 +12,10 @@ import '@quasar/extras/ionicons-v4/ionicons-v4.css'
 import '@quasar/extras/mdi-v4/mdi-v4.css'
 import '@quasar/extras/eva-icons/eva-icons.css'
 import Quasar from 'quasar'
-
+import { Notify } from 'quasar'
 Vue.use(Quasar, {
   config: {},
-  plugins: {
-  }
+  plugins: [Notify]
  })
 
 Vue.use(VueRouter)

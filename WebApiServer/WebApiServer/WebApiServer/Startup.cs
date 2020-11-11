@@ -2,6 +2,8 @@ using System;
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using AspNetCore.Proxy;
+using Microsoft.AspNetCore.SpaServices;
 using Microsoft.AspNetCore.Builder;
 using Microsoft.AspNetCore.Hosting;
 using Microsoft.AspNetCore.HttpsPolicy;
@@ -10,6 +12,7 @@ using Microsoft.Extensions.Configuration;
 using Microsoft.Extensions.DependencyInjection;
 using Microsoft.Extensions.Hosting;
 using Microsoft.Extensions.Logging;
+using VueCliMiddleware;
 
 namespace WebApiServer
 {
@@ -26,6 +29,7 @@ namespace WebApiServer
         {
             services.AddControllers();
             services.AddSwaggerDocument();
+            services.AddMvc(option => option.EnableEndpointRouting = false);
         }
 
         public void Configure(IApplicationBuilder app, IWebHostEnvironment env)
@@ -34,11 +38,15 @@ namespace WebApiServer
             {
                 app.UseDeveloperExceptionPage();
             }
+            app.UseMvc();
             app.UseOpenApi();
             app.UseSwaggerUi3();
-            app.UseHttpsRedirection();
             app.UseRouting();
             app.UseAuthorization();
+            app.UseSpa(spa =>
+            {
+                spa.UseProxyToSpaDevelopmentServer("http://localhost:8080");
+            });
             app.UseEndpoints(endpoints =>
             {
                 endpoints.MapControllers();

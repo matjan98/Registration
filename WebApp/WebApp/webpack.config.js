@@ -15,7 +15,13 @@ module.exports = {
   devtool: 'inline-source-map',
   devServer: {
     contentBase: './wwwroot',
-    historyApiFallback: true
+    historyApiFallback: true,
+    proxy: {
+      "/api/*": {
+          target: "http://localhost:5000",
+          secure: false
+      }
+  }
   },
   output: {
     filename: 'bundle/[name].js',

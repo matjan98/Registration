@@ -2,6 +2,7 @@
 using System.Collections.Generic;
 using System.Linq;
 using System.Threading.Tasks;
+using System.Web.Http.Cors;
 using Database;
 using Database.Tables;
 using Microsoft.AspNetCore.Mvc;
@@ -16,6 +17,7 @@ namespace WebApiServer.Controllers
     [ApiController]
     [Route("/[controller]/[action]")]
     [Produces("application/json")]
+    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
     public class ApiController : ControllerBase
     {
 
@@ -26,6 +28,7 @@ namespace WebApiServer.Controllers
         #region TagetDeveloper
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult DateParser(long? dateTicks)
         {
             return Ok(TargetDeveloperRepository.DateParser(dateTicks));
@@ -33,12 +36,14 @@ namespace WebApiServer.Controllers
 
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult TimeSpanParser(long? timeTicks)
         {
             return Ok(TargetDeveloperRepository.TimeSpanParser(timeTicks));
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult TestApi()
         {
             return Ok(TargetDeveloperRepository.TestApi());
@@ -49,12 +54,14 @@ namespace WebApiServer.Controllers
         #region TagetUser
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult LogIn(string username, string password)
         {
             return Ok(TargetUserRepository.LogIn(username, password));
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult Register(string first_name, string last_name, string username, string password, bool doctor)
         {
             return Ok(TargetUserRepository.Register(first_name, last_name, username, password, doctor));
@@ -65,6 +72,7 @@ namespace WebApiServer.Controllers
         #region TagetPatient
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult BookAnAppointmentWithDoctor(int doctorID, long? dateTime)
         {
             if(!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Patient))
@@ -75,6 +83,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult CancelAnAppointmentWithDoctor(int reserwationID)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Patient))
@@ -85,6 +94,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult ListBookedAppointments()
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Patient))
@@ -95,6 +105,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult ListDoctorAccesibility(int doctorID, long? dateTimeFrom, long? dateTimeTo)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Patient))
@@ -105,6 +116,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult ListDoctors()
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Patient))
@@ -119,6 +131,7 @@ namespace WebApiServer.Controllers
         #region TargetDoctor
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult SeeAllRequests(long? dateTimeFrom, long? dateTimeTo)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Doctor))
@@ -129,6 +142,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult SetSpecialization(string specialization)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Doctor))
@@ -139,6 +153,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult SetWorkingTime(long? timeSpanFrom, long? timeSpanTo)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Doctor))
@@ -153,6 +168,7 @@ namespace WebApiServer.Controllers
         #region TargetAdministrator
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult CreateReservation(int doctorID, int patientID, long? datetime)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Admin))
@@ -163,6 +179,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult SetPerrmisions(int userID, AccountType accountType)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Admin))
@@ -173,6 +190,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult RemoveUser(int userID)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Admin))
@@ -183,6 +201,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult CancelReservation(int reservationID)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Admin))
@@ -193,6 +212,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult AddUser(string first_name, string last_name, string username, string password, AccountType accountType)
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Admin))
@@ -203,6 +223,7 @@ namespace WebApiServer.Controllers
         }
 
         [HttpGet]
+        [Produces(typeof(DataResult))]
         public ActionResult ListAllUsers()
         {
             if (!ValidateService.ValidatePermission(Request, Database.Tables.AccountType.Admin))

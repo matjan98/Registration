@@ -10,6 +10,7 @@
   },
   "dependencies": {
     "@quasar/extras": "^1.0.0",
+    "cors": "^2.8.5",
     "cross-env": "^7.0.2",
     "lodash": "^4.17.20",
     "quasar": "^1.14.3",
