@@ -27,6 +27,37 @@ namespace WebApiServer.Services
             }
         }
 
+        internal static DataResult Whoami(HttpRequest request)
+        {
+            Microsoft.Extensions.Primitives.StringValues accessToken = request.Headers[HeaderNames.Authorization];
+            var token = accessToken.ToString().Replace("Bearer ", "");
+            var tokenCheckResult = LoginService.CheckToken(token);
+            if (tokenCheckResult.Logged)
+            {
+                var dbUser = GetUser(request);
+                return new DataResult
+                {
+                    Status = RequestStatus.Success,
+                    Data = new UserModel
+                    {
+                        AccountType = dbUser.account_type,
+                        FirstName = dbUser.first_name,
+                        ID = dbUser.ID,
+                        LastLogged = dbUser.last_logged,
+                        LastName = dbUser.last_name,
+                    }
+                };
+            }
+            else
+            {
+                return new DataResult
+                {
+                    Data = "You are not logged in",
+                    Status = RequestStatus.Fail
+                };
+            }
+        }
+
         public static User GetUser(HttpRequest request)
         {
             Microsoft.Extensions.Primitives.StringValues accessToken = request.Headers[HeaderNames.Authorization];

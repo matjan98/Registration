@@ -20,8 +20,12 @@ Vue.use(Quasar, {
 
 Vue.use(VueRouter)
 
-import Login from './login';
-import Register from './register';
+import Login from './pages/login';
+import Register from './pages/register';
+import Dashboard from './pages/dashboard';
+import DoctorsList from './pages/doctorsList';
+import MyVisits from './pages/myVisits';
+import AppointmentsList from './pages/appointmentsList';
 
 const router = new VueRouter({
   mode: 'history',
@@ -36,6 +40,26 @@ const router = new VueRouter({
       path: '/register',
       name: "register",
       component: Register,
+    },
+    {
+      path: '/dashboard',
+      name: "dashboard",
+      component: Dashboard,
+    },
+    {
+      path: '/doctorsList',
+      name: "doctorsList",
+      component: DoctorsList,
+    },
+    {
+      path: '/appointmentsList',
+      name: "appointmentsList",
+      component: AppointmentsList,
+    },
+    {
+      path: '/myVisits',
+      name: "myVisits",
+      component: MyVisits,
     },
   ]
 });

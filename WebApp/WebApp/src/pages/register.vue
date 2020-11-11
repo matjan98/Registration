@@ -55,7 +55,7 @@
 </template>
 
 <script lang="ts">
-import { ApiClient, RequestStatus } from "./generated/generated";
+import { ApiClient, RequestStatus } from "../generated/generated";
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
 @Component({ components: {} })

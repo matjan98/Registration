@@ -2,9 +2,8 @@ import * as generated from "./generated";
 
 export class ClientBase {
     protected transformOptions(requestInit: RequestInit): Promise<RequestInit> {
-        console.log("Test");
         if(requestInit && requestInit.headers){
-            (requestInit.headers as any).Authorization = "Bearer 123";
+            (requestInit.headers as any).Authorization = "Bearer " + localStorage.getItem("Token");
         }
         return Promise.resolve<RequestInit>(<any>requestInit);
     }

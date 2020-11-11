@@ -17,7 +17,6 @@ namespace WebApiServer.Controllers
     [ApiController]
     [Route("/[controller]/[action]")]
     [Produces("application/json")]
-    [EnableCors(origins: "http://localhost:8080", headers: "*", methods: "*")]
     public class ApiController : ControllerBase
     {
 
@@ -58,6 +57,13 @@ namespace WebApiServer.Controllers
         public ActionResult LogIn(string username, string password)
         {
             return Ok(TargetUserRepository.LogIn(username, password));
+        }
+
+        [HttpGet]
+        [Produces(typeof(DataResult))]
+        public ActionResult Whoami()
+        {
+            return Ok(ValidateService.Whoami(Request));
         }
 
         [HttpGet]
@@ -231,6 +237,24 @@ namespace WebApiServer.Controllers
                 return Ok(ValidateService.AdminPermissionRequired);
             }
             return Ok(TargetAdministratorRepository.ListAllUsers());
+        }
+
+        #endregion
+
+        #region devHelper
+
+        [HttpGet]
+        [Produces(typeof(AllModels))]
+        public ActionResult DevHelper()
+        {
+            return Ok(new AllModels
+            {
+                BookedAppointment = new BookedAppointment(),
+                DoctorAccessiblity = new DoctorAccessiblity(),
+                UserModel = new UserModel(),
+                RequestModel = new RequestModel(),
+                DoctorModel = new DoctorModel()
+            });
         }
 
         #endregion

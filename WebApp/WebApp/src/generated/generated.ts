@@ -9,9 +9,8 @@
 
 export class ClientBase {
     protected transformOptions(requestInit: RequestInit): Promise<RequestInit> {
-        console.log("Test");
         if(requestInit && requestInit.headers){
-            (requestInit.headers as any).Authorization = "Bearer 123";
+            (requestInit.headers as any).Authorization = "Bearer " + localStorage.getItem("Token");
         }
         return Promise.resolve<RequestInit>(<any>requestInit);
     }
@@ -27,6 +26,7 @@ export interface IApiClient {
     timeSpanParser(timeTicks: number | null | undefined): Promise<DataResult>;
     testApi(): Promise<DataResult>;
     logIn(username: string | null | undefined, password: string | null | undefined): Promise<DataResult>;
+    whoami(): Promise<DataResult>;
     register(first_name: string | null | undefined, last_name: string | null | undefined, username: string | null | undefined, password: string | null | undefined, doctor: boolean | undefined): Promise<DataResult>;
     bookAnAppointmentWithDoctor(doctorID: number | undefined, dateTime: number | null | undefined): Promise<DataResult>;
     cancelAnAppointmentWithDoctor(reserwationID: number | undefined): Promise<DataResult>;
@@ -42,6 +42,7 @@ export interface IApiClient {
     cancelReservation(reservationID: number | undefined): Promise<DataResult>;
     addUser(first_name: string | null | undefined, last_name: string | null | undefined, username: string | null | undefined, password: string | null | undefined, accountType: AccountType | undefined): Promise<DataResult>;
     listAllUsers(): Promise<DataResult>;
+    devHelper(): Promise<AllModels>;
 }
 
 export class ApiClient extends ClientBase implements IApiClient {
@@ -190,6 +191,42 @@ export class ApiClient extends ClientBase implements IApiClient {
     }
 
     protected processLogIn(response: Response): Promise<DataResult> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = DataResult.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<DataResult>(<any>null);
+    }
+
+    whoami(): Promise<DataResult> {
+        let url_ = this.baseUrl + "/Api/Whoami";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processWhoami(_response);
+        });
+    }
+
+    protected processWhoami(response: Response): Promise<DataResult> {
         const status = response.status;
         let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
         if (status === 200) {
@@ -824,6 +861,42 @@ export class ApiClient extends ClientBase implements IApiClient {
         }
         return Promise.resolve<DataResult>(<any>null);
     }
+
+    devHelper(): Promise<AllModels> {
+        let url_ = this.baseUrl + "/Api/DevHelper";
+        url_ = url_.replace(/[?&]$/, "");
+
+        let options_ = <RequestInit>{
+            method: "GET",
+            headers: {
+                "Accept": "application/json"
+            }
+        };
+
+        return this.transformOptions(options_).then(transformedOptions_ => {
+            return this.http.fetch(url_, transformedOptions_);
+        }).then((_response: Response) => {
+            return this.processDevHelper(_response);
+        });
+    }
+
+    protected processDevHelper(response: Response): Promise<AllModels> {
+        const status = response.status;
+        let _headers: any = {}; if (response.headers && response.headers.forEach) { response.headers.forEach((v: any, k: any) => _headers[k] = v); };
+        if (status === 200) {
+            return response.text().then((_responseText) => {
+            let result200: any = null;
+            let resultData200 = _responseText === "" ? null : JSON.parse(_responseText, this.jsonParseReviver);
+            result200 = AllModels.fromJS(resultData200);
+            return result200;
+            });
+        } else if (status !== 200 && status !== 204) {
+            return response.text().then((_responseText) => {
+            return throwException("An unexpected server error occurred.", status, _responseText, _headers);
+            });
+        }
+        return Promise.resolve<AllModels>(<any>null);
+    }
 }
 
 export class DataResult implements IDataResult {
@@ -877,6 +950,318 @@ export enum AccountType {
     Patient = 0,
     Doctor = 1,
     Admin = 2,
+}
+
+export class AllModels implements IAllModels {
+    bookedAppointment?: BookedAppointment | undefined;
+    doctorAccessiblity?: DoctorAccessiblity | undefined;
+    doctorModel?: DoctorModel | undefined;
+    requestModel?: RequestModel | undefined;
+    userModel?: UserModel | undefined;
+
+    constructor(data?: IAllModels) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.bookedAppointment = _data["bookedAppointment"] ? BookedAppointment.fromJS(_data["bookedAppointment"]) : <any>undefined;
+            this.doctorAccessiblity = _data["doctorAccessiblity"] ? DoctorAccessiblity.fromJS(_data["doctorAccessiblity"]) : <any>undefined;
+            this.doctorModel = _data["doctorModel"] ? DoctorModel.fromJS(_data["doctorModel"]) : <any>undefined;
+            this.requestModel = _data["requestModel"] ? RequestModel.fromJS(_data["requestModel"]) : <any>undefined;
+            this.userModel = _data["userModel"] ? UserModel.fromJS(_data["userModel"]) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): AllModels {
+        data = typeof data === 'object' ? data : {};
+        let result = new AllModels();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["bookedAppointment"] = this.bookedAppointment ? this.bookedAppointment.toJSON() : <any>undefined;
+        data["doctorAccessiblity"] = this.doctorAccessiblity ? this.doctorAccessiblity.toJSON() : <any>undefined;
+        data["doctorModel"] = this.doctorModel ? this.doctorModel.toJSON() : <any>undefined;
+        data["requestModel"] = this.requestModel ? this.requestModel.toJSON() : <any>undefined;
+        data["userModel"] = this.userModel ? this.userModel.toJSON() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IAllModels {
+    bookedAppointment?: BookedAppointment | undefined;
+    doctorAccessiblity?: DoctorAccessiblity | undefined;
+    doctorModel?: DoctorModel | undefined;
+    requestModel?: RequestModel | undefined;
+    userModel?: UserModel | undefined;
+}
+
+export class BookedAppointment implements IBookedAppointment {
+    dateTime!: Date;
+    doctorFirstName?: string | undefined;
+    doctorLastName?: string | undefined;
+    doctorSpecializaion?: string | undefined;
+    doctorID!: number;
+
+    constructor(data?: IBookedAppointment) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.dateTime = _data["dateTime"] ? new Date(_data["dateTime"].toString()) : <any>undefined;
+            this.doctorFirstName = _data["doctorFirstName"];
+            this.doctorLastName = _data["doctorLastName"];
+            this.doctorSpecializaion = _data["doctorSpecializaion"];
+            this.doctorID = _data["doctorID"];
+        }
+    }
+
+    static fromJS(data: any): BookedAppointment {
+        data = typeof data === 'object' ? data : {};
+        let result = new BookedAppointment();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["dateTime"] = this.dateTime ? this.dateTime.toISOString() : <any>undefined;
+        data["doctorFirstName"] = this.doctorFirstName;
+        data["doctorLastName"] = this.doctorLastName;
+        data["doctorSpecializaion"] = this.doctorSpecializaion;
+        data["doctorID"] = this.doctorID;
+        return data; 
+    }
+}
+
+export interface IBookedAppointment {
+    dateTime: Date;
+    doctorFirstName?: string | undefined;
+    doctorLastName?: string | undefined;
+    doctorSpecializaion?: string | undefined;
+    doctorID: number;
+}
+
+export class DoctorAccessiblity implements IDoctorAccessiblity {
+    visits?: Date[] | undefined;
+    visitTimeInMinutes!: number;
+    workingTimeFrom!: string;
+    workingTimeTo!: string;
+
+    constructor(data?: IDoctorAccessiblity) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            if (Array.isArray(_data["visits"])) {
+                this.visits = [] as any;
+                for (let item of _data["visits"])
+                    this.visits!.push(new Date(item));
+            }
+            this.visitTimeInMinutes = _data["visitTimeInMinutes"];
+            this.workingTimeFrom = _data["workingTimeFrom"];
+            this.workingTimeTo = _data["workingTimeTo"];
+        }
+    }
+
+    static fromJS(data: any): DoctorAccessiblity {
+        data = typeof data === 'object' ? data : {};
+        let result = new DoctorAccessiblity();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        if (Array.isArray(this.visits)) {
+            data["visits"] = [];
+            for (let item of this.visits)
+                data["visits"].push(item.toISOString());
+        }
+        data["visitTimeInMinutes"] = this.visitTimeInMinutes;
+        data["workingTimeFrom"] = this.workingTimeFrom;
+        data["workingTimeTo"] = this.workingTimeTo;
+        return data; 
+    }
+}
+
+export interface IDoctorAccessiblity {
+    visits?: Date[] | undefined;
+    visitTimeInMinutes: number;
+    workingTimeFrom: string;
+    workingTimeTo: string;
+}
+
+export class DoctorModel implements IDoctorModel {
+    firstName?: string | undefined;
+    id!: number;
+    lastLogged!: Date;
+    lastName?: string | undefined;
+    specialization?: string | undefined;
+
+    constructor(data?: IDoctorModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.firstName = _data["firstName"];
+            this.id = _data["id"];
+            this.lastLogged = _data["lastLogged"] ? new Date(_data["lastLogged"].toString()) : <any>undefined;
+            this.lastName = _data["lastName"];
+            this.specialization = _data["specialization"];
+        }
+    }
+
+    static fromJS(data: any): DoctorModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new DoctorModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["firstName"] = this.firstName;
+        data["id"] = this.id;
+        data["lastLogged"] = this.lastLogged ? this.lastLogged.toISOString() : <any>undefined;
+        data["lastName"] = this.lastName;
+        data["specialization"] = this.specialization;
+        return data; 
+    }
+}
+
+export interface IDoctorModel {
+    firstName?: string | undefined;
+    id: number;
+    lastLogged: Date;
+    lastName?: string | undefined;
+    specialization?: string | undefined;
+}
+
+export class RequestModel implements IRequestModel {
+    dateTime!: Date;
+    patientFirstName?: string | undefined;
+    patientLastName?: string | undefined;
+    patientID!: number;
+
+    constructor(data?: IRequestModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.dateTime = _data["dateTime"] ? new Date(_data["dateTime"].toString()) : <any>undefined;
+            this.patientFirstName = _data["patientFirstName"];
+            this.patientLastName = _data["patientLastName"];
+            this.patientID = _data["patientID"];
+        }
+    }
+
+    static fromJS(data: any): RequestModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new RequestModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["dateTime"] = this.dateTime ? this.dateTime.toISOString() : <any>undefined;
+        data["patientFirstName"] = this.patientFirstName;
+        data["patientLastName"] = this.patientLastName;
+        data["patientID"] = this.patientID;
+        return data; 
+    }
+}
+
+export interface IRequestModel {
+    dateTime: Date;
+    patientFirstName?: string | undefined;
+    patientLastName?: string | undefined;
+    patientID: number;
+}
+
+export class UserModel implements IUserModel {
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    id!: number;
+    accountType!: AccountType;
+    lastLogged!: Date;
+
+    constructor(data?: IUserModel) {
+        if (data) {
+            for (var property in data) {
+                if (data.hasOwnProperty(property))
+                    (<any>this)[property] = (<any>data)[property];
+            }
+        }
+    }
+
+    init(_data?: any) {
+        if (_data) {
+            this.firstName = _data["firstName"];
+            this.lastName = _data["lastName"];
+            this.id = _data["id"];
+            this.accountType = _data["accountType"];
+            this.lastLogged = _data["lastLogged"] ? new Date(_data["lastLogged"].toString()) : <any>undefined;
+        }
+    }
+
+    static fromJS(data: any): UserModel {
+        data = typeof data === 'object' ? data : {};
+        let result = new UserModel();
+        result.init(data);
+        return result;
+    }
+
+    toJSON(data?: any) {
+        data = typeof data === 'object' ? data : {};
+        data["firstName"] = this.firstName;
+        data["lastName"] = this.lastName;
+        data["id"] = this.id;
+        data["accountType"] = this.accountType;
+        data["lastLogged"] = this.lastLogged ? this.lastLogged.toISOString() : <any>undefined;
+        return data; 
+    }
+}
+
+export interface IUserModel {
+    firstName?: string | undefined;
+    lastName?: string | undefined;
+    id: number;
+    accountType: AccountType;
+    lastLogged: Date;
 }
 
 export class ApiException extends Error {

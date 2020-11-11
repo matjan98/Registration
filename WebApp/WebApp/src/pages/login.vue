@@ -36,7 +36,7 @@
 <script lang="ts">
 import Vue from "vue";
 import { Component, Prop } from "vue-property-decorator";
-import { ApiClient, RequestStatus } from "./generated/generated"
+import { ApiClient, RequestStatus } from "../generated/generated"
 @Component({ components: {} })
 export default class Login extends Vue {
   apiClient = new ApiClient();
@@ -51,6 +51,7 @@ export default class Login extends Vue {
           color: 'primary'
         })
         localStorage.setItem("Token", x.data)
+        this.$router.push({path: '/dashboard'})
       }
       else{
         this.$q.notify({
